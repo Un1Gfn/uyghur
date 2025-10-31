@@ -8,14 +8,25 @@ lc:=$(shell pkg-config --libs cairo)
 lp:=$(shell pkg-config --libs pango)
 lpc:=$(shell pkg-config --libs pangocairo)
 
-main.out: main.o
+P:=/tmp/ugpc.pdf
+
+default: my.out
+	./my.out
+
+okular: $P
+	exec okular $P >/dev/null 2>/dev/null
+
+$P: my.out
+	./my.out
+
+%.out: %.o
 	$(C) -o $@ $^ $(lp) $(lc) $(lpc)
 	@echo
 
-main.o: main.c
+%.o: %.c
 	$(C) -c $(fp) $(fc) $(fpc) -o $@ $^
 	@echo
 
-.PHONY: vim
+.PHONY: vim default
 vim:
 	exec vim -p *.c Makefile

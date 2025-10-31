@@ -1,0 +1,24 @@
+cmake_minimum_required(VERSION 4.1.2)
+
+project(
+	905a003e-aadf-42bd-ae08-eb4cbe551cfc
+	VERSION 0.1
+	DESCRIPTION 68a3d2ed-e777-45e4-9704-9bc3dbf5e160
+	HOMEPAGE_URL https://github.com/Un1Gfn/uyghur
+	LANGUAGES C
+)
+
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+cmake_pkg_config(REQUIRED pango cairo pangocairo)
+
+add_executable( main.out main.c )
+
+target_link_libraries(
+	main.out
+	PRIVATE cairo
+	PRIVATE pango
+	PRIVATE pangocairo
+)
+

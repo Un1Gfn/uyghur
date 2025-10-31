@@ -15,3 +15,7 @@ main.out: main.o
 main.o: main.c
 	$(C) -c $(fp) $(fc) $(fpc) -o $@ $^
 	@echo
+
+.PHONY: vim
+vim:
+	exec vim -p *.c Makefile

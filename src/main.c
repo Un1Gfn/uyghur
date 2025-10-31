@@ -1,11 +1,13 @@
+#include <assert.h>
 #include <cairo.h>
 #include <cairo-pdf.h>
 #include <pango/pangocairo.h>
 
 void draw_text(cairo_t *cr) {
     PangoLayout *layout = pango_cairo_create_layout(cr);
-    pango_layout_set_text(layout, "مرحبا بالعالم", -1);
-    PangoFontDescription *desc = pango_font_description_from_string("Sans 24");
+    pango_layout_set_text(layout, "\u0626\u06d5", -1);
+    PangoFontDescription *desc = pango_font_description_from_string("Noto Serif Old Uyghur 32");
+		assert(desc);
     pango_layout_set_font_description(layout, desc);
     pango_font_description_free(desc);
 

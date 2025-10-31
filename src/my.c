@@ -20,17 +20,45 @@ void new() {
 
 }
 
-void draw() {
 
-	// background
-	cairo_set_source_rgb(cr, 1, 1, 1);
+void background() {
+	cairo_set_source_rgb(cr, 1, 1, 1); // white
 	cairo_paint(cr);
+}
 
-	// rectangle
+void grid() {
+
+	// black
+	cairo_set_source_rgb(cr, 0, 0, 0);
+
+	// horizontal
+	cairo_move_to(cr, 595, 100); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, 595, 200); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, 595, 300); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, 595, 400); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, 595, 500); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, 595, 600); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, 595, 700); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, 595, 800); cairo_line_to(cr, 95, 800);
+	cairo_fill(cr);
+
+	// verticle
+	cairo_move_to(cr, 495, 0); cairo_rel_line_to(cr, 0, 800);
+	cairo_move_to(cr, 395, 0); cairo_rel_line_to(cr, 0, 800);
+	cairo_move_to(cr, 295, 0); cairo_rel_line_to(cr, 0, 800);
+	cairo_move_to(cr, 195, 0); cairo_rel_line_to(cr, 0, 800);
+	cairo_move_to(cr,  95, 0); cairo_rel_line_to(cr, 0, 800);
+	cairo_fill(cr);
+
+}
+
+void rect() {
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_rectangle(cr, 100, 100, 10, 10);
 	cairo_fill(cr);
-	//cairo_paint(cr);
+}
+
+void text() {
 
 }
 
@@ -45,7 +73,9 @@ int main() {
 
 	new();
 
-	draw();
+	background();
+
+	grid();
 
 	delete();
 

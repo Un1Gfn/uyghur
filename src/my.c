@@ -68,11 +68,32 @@ void rect() {
 }
 
 void text() {
+
+	int w = -1;
+
 	PangoLayout *layout = pango_cairo_create_layout(cr);
 	pango_layout_set_font_description(layout, desc);
-	pango_layout_set_text(layout, "\u0626\u06c7\u064a\u063a\u06c7\u0631", -1);
+	cairo_set_source_rgb(cr, 0, 0, 0);
+
 	cairo_move_to(cr, W-200, 400);
+	pango_layout_set_text(layout, "\u0626 \u06c7 \u064a \u063a \u06c7 \u0631", -1);
+	pango_layout_get_size(layout, &w, NULL);
+	printf("%d = %d\n", __LINE__, w);
 	pango_cairo_show_layout(cr, layout);
+	//pango_cairo_update_layout(cr, layout);
+
+	cairo_move_to(cr, W-200, 300);
+	pango_layout_set_text(layout, "twinkle twinkle little star", -1);
+	pango_layout_get_size(layout, &w, NULL);
+	printf("%d = %d\n", __LINE__, w);
+	pango_cairo_show_layout(cr, layout);
+
+	cairo_move_to(cr, W-200, 200);
+	pango_layout_set_text(layout, "\u0626\u06c7\u064a\u063a\u06c7\u0631", -1);
+	pango_layout_get_size(layout, &w, NULL);
+	printf("%d = %d\n", __LINE__, w);
+	pango_cairo_show_layout(cr, layout);
+
 }
 
 int main() {

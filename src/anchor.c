@@ -1,12 +1,12 @@
 /*
-export L=pango,cairo,pangocairo; b() { gcc -Wall -Wextra -O0 -Og -std=gnu23 $(pkg-config --cflags $L) my.c $(pkg-config --libs $L) -o my.out; }; r() { ./my.out; };
+export A=anchor L=pango,cairo,pangocairo; b() { gcc -Wall -Wextra -O0 -Og -std=gnu23 $(pkg-config --cflags $L) $A.c $(pkg-config --libs $L) -o $A.out; }; r() { env O=$A.pdf ./$A.out; };
 */
 
 #include <assert.h>
 #include <cairo-pdf.h>
 #include <cairo.h>
-#include <pango/pangocairo.h>
 #include <pango/pango-font.h>
+#include <pango/pangocairo.h>
 
 #define W 595
 #define H 842
@@ -19,7 +19,10 @@ cairo_t *cr = NULL;
 PangoFontDescription *desc = NULL;
 
 void new() {
-	surface = cairo_pdf_surface_create("/home/darren/Desktop/ugpc.pdf", W, H);
+	const char *const file = getenv("O");
+	assert(file);
+	assert(file[0]);
+	surface = cairo_pdf_surface_create(file, W, H);
 	_(cairo_surface_status(surface));
 	assert(CAIRO_SURFACE_TYPE_PDF == cairo_surface_get_type(surface));
 	cr = cairo_create(surface);
@@ -70,28 +73,32 @@ void rect() {
 void text() {
 
 	int w = -1;
+	int h = -1;
 
 	PangoLayout *layout = pango_cairo_create_layout(cr);
 	pango_layout_set_font_description(layout, desc);
-	cairo_set_source_rgb(cr, 0, 0, 0);
 
-	cairo_move_to(cr, W-200, 400);
 	pango_layout_set_text(layout, "\u0626 \u06c7 \u064a \u063a \u06c7 \u0631", -1);
-	pango_layout_get_size(layout, &w, NULL);
-	printf("%d = %d\n", __LINE__, w);
+
+	pango_layout_get_size(layout, &w, &h);
+	cairo_move_to(cr, W-200-(double)w/PANGO_SCALE, 400);
+	cairo_set_source_rgb(cr, 0, 0, 0);
 	pango_cairo_show_layout(cr, layout);
+	cairo_rectangle(cr, W-200-(double)w/PANGO_SCALE, 400, w/PANGO_SCALE, h/PANGO_SCALE);
+	cairo_set_source_rgba(cr, 0.5, 0.5, 0.5, 0.5);
+	cairo_fill(cr);
 	//pango_cairo_update_layout(cr, layout);
 
-	cairo_move_to(cr, W-200, 300);
 	pango_layout_set_text(layout, "twinkle twinkle little star", -1);
 	pango_layout_get_size(layout, &w, NULL);
-	printf("%d = %d\n", __LINE__, w);
+	cairo_move_to(cr, W-200-(double)w/PANGO_SCALE, 300);
+	cairo_set_source_rgb(cr, 0, 0, 0);
 	pango_cairo_show_layout(cr, layout);
 
-	cairo_move_to(cr, W-200, 200);
 	pango_layout_set_text(layout, "\u0626\u06c7\u064a\u063a\u06c7\u0631", -1);
 	pango_layout_get_size(layout, &w, NULL);
-	printf("%d = %d\n", __LINE__, w);
+	cairo_move_to(cr, W-200-(double)w/PANGO_SCALE, 200);
+	cairo_set_source_rgb(cr, 0, 0, 0);
 	pango_cairo_show_layout(cr, layout);
 
 }

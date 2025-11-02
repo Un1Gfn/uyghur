@@ -1,55 +1,64 @@
+/*
+export L=pango,cairo,pangocairo; b() { gcc -Wall -Wextra -O0 -Og -std=gnu23 $(pkg-config --cflags $L) my.c $(pkg-config --libs $L) -o my.out; }; r() { ./my.out; };
+*/
+
 #include <assert.h>
 #include <cairo-pdf.h>
 #include <cairo.h>
 #include <pango/pangocairo.h>
+#include <pango/pango-font.h>
+
+#define W 595
+#define H 842
 
 #define _(X) assert(CAIRO_STATUS_SUCCESS==X);
 
 cairo_surface_t *surface = NULL;
 cairo_t *cr = NULL;
 
-void new() {
+PangoFontDescription *desc = NULL;
 
-	// create pdf surface
-	surface = cairo_pdf_surface_create("/home/darren/Desktop/ugpc.pdf", 595, 842);
+void new() {
+	surface = cairo_pdf_surface_create("/home/darren/Desktop/ugpc.pdf", W, H);
 	_(cairo_surface_status(surface));
 	assert(CAIRO_SURFACE_TYPE_PDF == cairo_surface_get_type(surface));
-
-	// create drawing context
 	cr = cairo_create(surface);
-
+	desc = pango_font_description_from_string("Noto Serif Old Uyghur Regular 27");
 }
 
+void delete() {
+	pango_font_description_free(desc);
+	desc = NULL;
+	cairo_destroy(cr);
+	cr = NULL;
+	cairo_surface_destroy(surface);
+	surface = NULL;
+}
 
-void background() {
-	cairo_set_source_rgb(cr, 1, 1, 1); // white
+void bg() {
+	cairo_set_source_rgb(cr, 1, 1, 1);
 	cairo_paint(cr);
 }
 
 void grid() {
-
-	// black
-	cairo_set_source_rgb(cr, 0, 0, 0);
-
 	// horizontal
-	cairo_move_to(cr, 595, 100); cairo_rel_line_to(cr, -500, 0);
-	cairo_move_to(cr, 595, 200); cairo_rel_line_to(cr, -500, 0);
-	cairo_move_to(cr, 595, 300); cairo_rel_line_to(cr, -500, 0);
-	cairo_move_to(cr, 595, 400); cairo_rel_line_to(cr, -500, 0);
-	cairo_move_to(cr, 595, 500); cairo_rel_line_to(cr, -500, 0);
-	cairo_move_to(cr, 595, 600); cairo_rel_line_to(cr, -500, 0);
-	cairo_move_to(cr, 595, 700); cairo_rel_line_to(cr, -500, 0);
-	cairo_move_to(cr, 595, 800); cairo_line_to(cr, 95, 800);
-	cairo_fill(cr);
-
+	cairo_move_to(cr, W, 100); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, W, 200); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, W, 300); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, W, 400); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, W, 500); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, W, 600); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, W, 700); cairo_rel_line_to(cr, -500, 0);
+	cairo_move_to(cr, W, 800); cairo_line_to(cr, W-500, 800);
 	// verticle
-	cairo_move_to(cr, 495, 0); cairo_rel_line_to(cr, 0, 800);
-	cairo_move_to(cr, 395, 0); cairo_rel_line_to(cr, 0, 800);
-	cairo_move_to(cr, 295, 0); cairo_rel_line_to(cr, 0, 800);
-	cairo_move_to(cr, 195, 0); cairo_rel_line_to(cr, 0, 800);
-	cairo_move_to(cr,  95, 0); cairo_rel_line_to(cr, 0, 800);
+	cairo_move_to(cr, W-100, 0); cairo_rel_line_to(cr, 0, 800);
+	cairo_move_to(cr, W-200, 0); cairo_rel_line_to(cr, 0, 800);
+	cairo_move_to(cr, W-300, 0); cairo_rel_line_to(cr, 0, 800);
+	cairo_move_to(cr, W-400, 0); cairo_rel_line_to(cr, 0, 800);
+	cairo_move_to(cr, W-500, 0); cairo_rel_line_to(cr, 0, 800);
+	// draw
+	cairo_set_source_rgb(cr, 1, 0, 0);
 	cairo_fill(cr);
-
 }
 
 void rect() {
@@ -59,25 +68,18 @@ void rect() {
 }
 
 void text() {
-
-}
-
-void delete() {
-	cairo_destroy(cr);
-	cr = NULL;
-	cairo_surface_destroy(surface);
-	surface = NULL;
+	PangoLayout *layout = pango_cairo_create_layout(cr);
+	pango_layout_set_font_description(layout, desc);
+	pango_layout_set_text(layout, "\u0626\u06c7\u064a\u063a\u06c7\u0631", -1);
+	cairo_move_to(cr, W-200, 400);
+	pango_cairo_show_layout(cr, layout);
 }
 
 int main() {
-
 	new();
-
-	background();
-
+	bg();
 	grid();
-
+	text();
 	delete();
-
+	return 0;
 }
-

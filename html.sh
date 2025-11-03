@@ -4,9 +4,13 @@ H=/tmp/x.html
 
 #V=(1 2 25 26 27 28 30 31)
 #C=(3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 29 32)
-A=(00 27 D5 28 7E 2A 2C 86 2E 2F 31 32 98 33 34 3A 41 42 43 AF AD 44 45 46 BE 48 C7 C6 C8 CB D0 49)
-A+=(26 40)
-[[ "34" == "${#A[@]}" ]]
+A=(00)
+A+=(27 D5 28 7E 2A 2C 86 2E 2F 31 32 98 33 34 3A 41 42 43 AF AD 44 45 46 BE 48 C7 C6 C8 CB D0 49 4A)
+A+=(26)
+[ "34" = "${#A[@]}" ]
+# empty A[0]
+# alphabet A[1] .. A[32]
+# hamza A[33]
 
 V4=(1 2 25 26 27 28)
 V8=(30 31)
@@ -46,7 +50,7 @@ printf "\n"
 	# V4
 	for i in "${V4[@]}"; do
 		printf "$i - "
-		f 32 "$i"
+		f 33 "$i"
 		printf " "
 		f "$i"
 		printf " "
@@ -54,7 +58,7 @@ printf "\n"
 		f "$i"
 		printf " "
 		g 21
-		f 32 "$i"
+		f 33 "$i"
 		echo
 	done
 	printf "\n"
@@ -63,21 +67,21 @@ printf "\n"
 	for i in "${V8[@]}"; do
 	#for i in 31; do
 		printf "$i - "
-		f 32 $i
+		f 33 $i
 		s
 		f $i
 		s
-		f 32 $i; g 1
+		f 33 $i; g 1
 		s
 		f $i; g 21
 		s
 		g 21; f $i; g 1
 		s
-		g 21; f 32 $i; g 1
+		g 21; f 33 $i; g 1
 		s
 		g 21; f $i
 		s
-		g 21; f 32 $i
+		g 21; f 33 $i
 		printf " "
 		echo
 	done
@@ -114,7 +118,7 @@ printf "\n"
 	echo
 
 	# alphabet listing
-	for i in {1..32}; do
+	for i in {1..32} 33; do
 		printf "$i - "
 		f "$i"
 		echo

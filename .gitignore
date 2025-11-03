@@ -1,2 +1,4 @@
 *.o
 *.out
+/src/fourline.pdf
+/src/anchor.pdf

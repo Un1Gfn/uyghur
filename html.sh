@@ -12,8 +12,7 @@ V4=(1 2 25 26 27 28)
 V8=(30 31)
 
 C2=(             9 10 11 12                                     29    )
-C3=(                                                         24       )
-C4=( 3 4 5 6 7 8            13 14 15 16 17 18 19 20 21 22 23       32 )
+C4=( 3 4 5 6 7 8            13 14 15 16 17 18 19 20 21 22 23 24    32 )
 
 f() {
 	for i in "$@"; do
@@ -25,6 +24,11 @@ f() {
 # grey
 g() {
 	echo -n "<span style=color:#EEEEEE>$(f "$@")</span>"
+}
+
+# space
+s() {
+	printf " "
 }
 
 echo
@@ -59,48 +63,55 @@ printf "\n"
 	for i in "${V8[@]}"; do
 	#for i in 31; do
 		printf "$i - "
-		
 		f 32 $i
-		printf " "
-
+		s
 		f $i
+		s
+		f 32 $i; g 1
+		s
+		f $i; g 21
+		s
+		g 21; f $i; g 1
+		s
+		g 21; f 32 $i; g 1
+		s
+		g 21; f $i
+		s
+		g 21; f 32 $i
 		printf " "
-
-		f 32 $i
-		g 1
-		printf " "
-
-		f $i
-		g 21
-		printf " "
-
-		g 21
-		f $i
-		g 1
-		printf " "
-
-		g 21
-		f 32 $i
-		g 1
-		printf " "
-
-		g 21
-		f $i
-		printf " "
-
-		g 21
-		f 32 $i
-		printf " "
-
 		echo
 	done
 	printf "\n"
 
 	# C2
+	for i in "${C2[@]}"; do
+		printf "$i - "
+		s
+		f $i
+		s
+		g 21; f $i
+		s
+		echo
+	done
+	echo
 
 	# C3
 
 	# C4
+	for i in "${C4[@]}"; do
+		printf "$i - "
+		s
+		f $i
+		s
+		f $i; g 1
+		s
+		g 21; f $i; g 1
+		s
+		g 21; f $i
+		s
+		echo
+	done
+	echo
 
 	# alphabet listing
 	for i in {1..32}; do

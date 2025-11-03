@@ -4,19 +4,25 @@ H=/tmp/x.html
 
 #V=(1 2 25 26 27 28 30 31)
 #C=(3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 29 32)
-A=(00)
-A+=(27 D5 28 7E 2A 2C 86 2E 2F 31 32 98 33 34 3A 41 42 43 AF AD 44 45 46 BE 48 C7 C6 C8 CB D0 49 4A)
-A+=(26)
-[ "34" = "${#A[@]}" ]
-# empty A[0]
+A=(
+	26
+	27 D5 28 7E 2A 2C 86 2E 2F 31 32 98 33 34 3A 41 42 43 AF AD 44 45 46 BE 48 C7 C6 C8 CB D0 49 4A
+)
+[ "33" = "${#A[@]}" ]
+# hamza A[0]
 # alphabet A[1] .. A[32]
-# hamza A[33]
 
 V4=(1 2 25 26 27 28)
 V8=(30 31)
 
 C2=(             9 10 11 12                                     29    )
 C4=( 3 4 5 6 7 8            13 14 15 16 17 18 19 20 21 22 23 24    32 )
+
+# initial
+I=21
+
+# final
+F=1
 
 f() {
 	for i in "$@"; do
@@ -50,15 +56,15 @@ printf "\n"
 	# V4
 	for i in "${V4[@]}"; do
 		printf "$i - "
-		f 33 "$i"
+		f 0 "$i"
 		printf " "
 		f "$i"
 		printf " "
-		g 21
+		g $I
 		f "$i"
 		printf " "
-		g 21
-		f 33 "$i"
+		g $I
+		f 0 "$i"
 		echo
 	done
 	printf "\n"
@@ -67,21 +73,21 @@ printf "\n"
 	for i in "${V8[@]}"; do
 	#for i in 31; do
 		printf "$i - "
-		f 33 $i
+		f 0 $i
 		s
 		f $i
 		s
-		f 33 $i; g 1
+		f 0 $i; g $F
 		s
-		f $i; g 21
+		f $i; g $I
 		s
-		g 21; f $i; g 1
+		g $I; f $i; g $F
 		s
-		g 21; f 33 $i; g 1
+		g $I; f 0 $i; g $F
 		s
-		g 21; f $i
+		g $I; f $i
 		s
-		g 21; f 33 $i
+		g $I; f 0 $i
 		printf " "
 		echo
 	done
@@ -93,7 +99,7 @@ printf "\n"
 		s
 		f $i
 		s
-		g 21; f $i
+		g $I; f $i
 		s
 		echo
 	done
@@ -107,18 +113,18 @@ printf "\n"
 		s
 		f $i
 		s
-		f $i; g 1
+		f $i; g $F
 		s
-		g 21; f $i; g 1
+		g $I; f $i; g $F
 		s
-		g 21; f $i
+		g $I; f $i
 		s
 		echo
 	done
 	echo
 
 	# alphabet listing
-	for i in {1..32} 33; do
+	for i in 0 {1..32}; do
 		printf "$i - "
 		f "$i"
 		echo

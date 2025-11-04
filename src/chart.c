@@ -77,6 +77,18 @@ void grid() {
 }
 
 void text() {
+	LPP A = I[0][0];
+	intptr_t c = (intptr_t)A[0];
+	assert(8 == c);
+
+	int i = 1;
+
+	int w = -1;
+	PangoLayout *l = (PangoLayout*)A[i]->l;
+	pango_layout_get_size(l, &w, NULL);
+	cairo_move_to(cr, W-w/PANGO_SCALE, 0);
+	pango_cairo_show_layout(cr, l);
+
 
 }
 

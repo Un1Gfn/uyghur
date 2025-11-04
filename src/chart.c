@@ -1,5 +1,5 @@
 /*
-export A=chart L=pango,cairo,pangocairo; B() { ./gen.sh >gen.h && gcc -Wall -Wextra -O0 -Og -std=c99 $(pkg-config --cflags $L) $A.c $(pkg-config --libs $L) -o $A.out; }; R() { env O=/home/darren/Desktop/$A.pdf ./$A.out; };
+export A=chart L=pango,cairo,pangocairo; B() { ./gen.sh >gen.h && gcc -std=gnu23 -Wall -Wextra -O0 -Og -g $(pkg-config --cflags $L) $A.c $(pkg-config --libs $L) -o $A.out; }; R() { env O=/home/darren/Desktop/$A.pdf ./$A.out; };
 */
 
 #include <assert.h>
@@ -14,14 +14,23 @@ export A=chart L=pango,cairo,pangocairo; B() { ./gen.sh >gen.h && gcc -Wall -Wex
 #define H 1191
 
 #define _(X) assert(CAIRO_STATUS_SUCCESS==X);
+#define X 2
+#define Y 16
 
 cairo_surface_t *surface = NULL;
 cairo_t *cr = NULL;
 
 PangoFontDescription *desc = NULL;
 
-int max_w = -1;
+// max size among all variants of all letters
 int max_h = -1;
+int max_w = -1;
+
+// number of variants of each letter
+int Cn[X][Y] = {};
+
+// total width of all variants of each letter
+int Cw[X][Y] = {};
 
 void new() {
 	const char *const file = getenv("O");
@@ -46,21 +55,22 @@ void delete() {
 void load() {
 	static intptr_t max_count = -1;
 	_Static_assert(sizeof(I) == 32 * sizeof(LPP), "");
-	for (int i = 0; i < 2; i++) for (int j = 0; j < 16; j++) {
-		LPP A = I[i][j];
-		for (int i = 1; A[i]; i++) {
+	for (int x = 0; x < 2; x++) for (int y = 0; y < 16; y++) {
+		LPP A = I[x][y];
+		for (int i = 0; A[i]; i++) {
 			int w=0, h=0;
-			A[0] = (LP)((intptr_t)A[0] + 1);
+			Cn[x][y]++;
 			PangoLayout *l = pango_cairo_create_layout(cr);
 			pango_layout_set_font_description(l, desc);
 			pango_layout_set_text(l, A[i]->s, -1);
 			pango_layout_get_size(l, &w, &h);
 			//printf("%lf %lf\n", (double)w/PANGO_SCALE, (double)h/PANGO_SCALE);
+			Cw[x][y] += w;
 			if (w > max_w) max_w = w;
 			if (h > max_h) max_h = h;
 			A[i]->l = l;
 		}
-		if((intptr_t)A[0] > max_count) max_count = (intptr_t)A[0];
+		if (Cn[x][y] > max_count) max_count = Cn[x][y];
 	}
 	assert(8 == max_count);
 }
@@ -78,18 +88,17 @@ void grid() {
 
 void text() {
 	LPP A = I[0][0];
-	intptr_t c = (intptr_t)A[0];
-	assert(8 == c);
-
-	int i = 1;
-
-	int w = -1;
-	PangoLayout *l = (PangoLayout*)A[i]->l;
-	pango_layout_get_size(l, &w, NULL);
-	cairo_move_to(cr, W-w/PANGO_SCALE, 0);
-	pango_cairo_show_layout(cr, l);
-
-
+	double cur = W;
+	for (int i = 0; A[i]; i++) {
+		double m = (double) ((max_w * 8) - Cw[0][0]) / PANGO_SCALE / (Cn[0][0] - 1);
+		int w = -1;
+		PangoLayout *l = (PangoLayout*)A[i]->l;
+		pango_layout_get_size(l, &w, NULL);
+		cur -= (double) w / PANGO_SCALE;
+		cairo_move_to(cr, cur, 0);
+		pango_cairo_show_layout(cr, l);
+		cur -= m;
+	}
 }
 
 int main() {

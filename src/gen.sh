@@ -35,7 +35,7 @@ g() {
 
 # begin
 b() {
-	printf '/* %02d */ (LPA){ (L*)0, &(L){.s="' "$i"
+	printf '/* %02d */ (LPA){ &(L){.s="' "$i"
 }
 
 # comma

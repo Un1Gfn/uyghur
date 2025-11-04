@@ -1,5 +1,5 @@
 /*
-export A=chart L=pango,cairo,pangocairo; B() { ./gen.sh >gen.h && gcc -std=gnu23 -Wall -Wextra -O0 -Og -g $(pkg-config --cflags $L) $A.c $(pkg-config --libs $L) -o $A.out; }; R() { env O=/home/darren/Desktop/$A.pdf ./$A.out; };
+export A=chart L=pango,cairo,pangocairo; B() { ./gen.sh >gen.h && gcc -std=gnu23 -Wall -Wextra -O0 -Og -g $(pkg-config --cflags $L) $A.c $(pkg-config --libs $L) -o $A.out; }; R() { env O=/home/darren/Desktop/x.pdf ./$A.out; };
 */
 
 #include <assert.h>
@@ -42,7 +42,7 @@ void new() {
 	_(cairo_surface_status(surface));
 	assert(CAIRO_SURFACE_TYPE_PDF == cairo_surface_get_type(surface));
 	cr = cairo_create(surface);
-	desc = pango_font_description_from_string("Noto Serif Old Uyghur Regular 40");
+	desc = pango_font_description_from_string("Noto Serif Old Uyghur Regular 45");
 }
 
 void delete() {
@@ -82,17 +82,17 @@ void bg() {
 	cairo_paint(cr);
 }
 
-void grid() {
-	cairo_set_source_rgb(cr, 0, 0, 0);
-	cairo_rectangle(cr, W, 0, -(double)max_w/PANGO_SCALE*8, (double)max_h/PANGO_SCALE*17);
-	cairo_stroke(cr);
-}
+//void grid() {
+//	cairo_set_source_rgb(cr, 0, 0, 0);
+//	cairo_rectangle(cr, W, 0, -(double)max_w/PANGO_SCALE*8, (double)max_h/PANGO_SCALE*17);
+//	cairo_stroke(cr);
+//}
 
-void cell(int x, int y) {
+void cell(int x, int y, int _, double curW) {
+	cairo_set_source_rgb(cr, 0, 0, 0);
 	LPP A = I[x][y];
-	double curW = W;
 	int w = -1;
-	double m = (double) ((max_w * 8) - Cw[x][y]) / PANGO_SCALE / (Cn[x][y] - 1);
+	double m = (double) ((max_w * _) - Cw[x][y]) / PANGO_SCALE / (Cn[x][y] - 1);
 	for (int i = 0; A[i]; i++) {
 		PangoLayout *l = (PangoLayout*)A[i]->l;
 		pango_layout_get_size(l, &w, NULL);
@@ -104,16 +104,26 @@ void cell(int x, int y) {
 }
 
 void text() {
-	cell(0, 0);
+	for (int y = 1; y < Y; y++) {
+		cell(0, y, 4, W);
+		curH += (double) max_h / PANGO_SCALE;
+	}
+	curH = 0;
+	for (int y = 1; y < Y; y++) {
+		cell(1, y, 4, W - (double) max_w / PANGO_SCALE * 4.5);
+		curH += (double) max_h / PANGO_SCALE;
+	}
+	//curH += (double) max_h / PANGO_SCALE / 2;
+	cell(0, 0, 8, W);
 	curH += (double) max_h / PANGO_SCALE;
-	cell(1, 0);
+	cell(1, 0, 8, W);
 }
 
 int main() {
 	new();
 	load();
 	bg();
-	grid();
+	//grid();
 	text();
 	delete();
 	return 0;

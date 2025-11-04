@@ -22,6 +22,8 @@ cairo_t *cr = NULL;
 
 PangoFontDescription *desc = NULL;
 
+double curH = 0;
+
 // max size among all variants of all letters
 int max_h = -1;
 int max_w = -1;
@@ -86,19 +88,25 @@ void grid() {
 	cairo_stroke(cr);
 }
 
-void text() {
-	LPP A = I[0][0];
-	double cur = W;
+void cell(int x, int y) {
+	LPP A = I[x][y];
+	double curW = W;
+	int w = -1;
+	double m = (double) ((max_w * 8) - Cw[x][y]) / PANGO_SCALE / (Cn[x][y] - 1);
 	for (int i = 0; A[i]; i++) {
-		double m = (double) ((max_w * 8) - Cw[0][0]) / PANGO_SCALE / (Cn[0][0] - 1);
-		int w = -1;
 		PangoLayout *l = (PangoLayout*)A[i]->l;
 		pango_layout_get_size(l, &w, NULL);
-		cur -= (double) w / PANGO_SCALE;
-		cairo_move_to(cr, cur, 0);
+		curW -= (double) w / PANGO_SCALE;
+		cairo_move_to(cr, curW, curH);
 		pango_cairo_show_layout(cr, l);
-		cur -= m;
+		curW -= m;
 	}
+}
+
+void text() {
+	cell(0, 0);
+	curH += (double) max_h / PANGO_SCALE;
+	cell(1, 0);
 }
 
 int main() {

@@ -2,3 +2,4 @@
 *.out
 /src/fourline.pdf
 /src/anchor.pdf
+/src/gen.h

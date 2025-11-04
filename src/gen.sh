@@ -9,7 +9,7 @@ A=(
 # alphabet A[1] .. A[32]
 
 V4=(1 2 25 26 27 28)
-V8=(30 31)
+# V8
 
 C2=(             9 10 11 12                                     29    )
 C4=( 3 4 5 6 7 8            13 14 15 16 17 18 19 20 21 22 23 24    32 )
@@ -21,6 +21,8 @@ I=21
 F=1
 
 f() {
+	local i
+	local j
 	for i in "$@"; do
 		j="${A["$i"]}"
 		echo -n "\u06$j"
@@ -33,21 +35,38 @@ g() {
 
 # begin
 b() {
-	printf "/* %02d */ { " "$i"
+	printf '/* %02d */ (LPA){ (L*)0, &(L){.s="' "$i"
 }
 
 # comma
 c() {
-	printf '", "'
+	printf '",.l=NULL}, &(L){.s="'
 }
 
 # end
 e() {
-	echo '", NULL };'
+	echo '",.l=NULL}, NULL },'
+}
+
+header() { cat <<"EOF"
+typedef struct {
+	const char *s;
+	const PangoLayout *l;
+} L;
+
+typedef L *LP;
+
+typedef LP LPA[];
+typedef LP *LPP;
+
+LPP I[2][16] = {
+
+EOF
 }
 
 group1() {
 	# vowels except V8
+	local i
 	for i in "${V4[@]}"; do
 		b "$i"
 		f 0 "$i"
@@ -86,42 +105,57 @@ group1() {
 	} | sort -n
 }
 
+f8() {
+	b
+	f 0 $i
+	c
+	f $i
+	c
+	f 0 $i; g $F
+	c
+	f $i; g $I
+	c
+	g $I; f $i; g $F
+	c
+	g $I; f 0 $i; g $F
+	c
+	g $I; f $i
+	c
+	g $I; f 0 $i
+	e
+}
+
 # vowels of V8
 group2() {
-	for i in "${V8[@]}"; do
-	#for i in 31; do
-		b "$i"
-		f 0 $i
-		c
-		f $i
-		c
-		f 0 $i; g $F
-		c
-		f $i; g $I
-		c
-		g $I; f $i; g $F
-		c
-		g $I; f 0 $i; g $F
-		c
-		g $I; f $i
-		c
-		g $I; f 0 $i
-		e
-	done
+	local i
+	printf "[0][0] = "
+	i=30
+	f8
+	printf "[1][0] = "
+	i=31
+	f8
+	printf "\n\n"
+}
+
+footer() {
+	printf "};\n\n// ok\n\n"
 }
 
 main() {
+	local i
 	echo
+	header
 	paste -d "" \
-		<(
-			printf "R[%s] = \n" {1..16}
-			printf "L[%s] = \n" {1..16}
-		) <(
-			group1
-		)
+			<(
+				for i in 0 1; do
+					printf "[$i][%s] = \n" {1..15}
+				done
+			) <(
+					group1
+			)
 	echo
 	group2
-	printf "\nOK\n\n"
+	footer
 }
 
 main; exit

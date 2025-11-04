@@ -42,7 +42,7 @@ void new() {
 	_(cairo_surface_status(surface));
 	assert(CAIRO_SURFACE_TYPE_PDF == cairo_surface_get_type(surface));
 	cr = cairo_create(surface);
-	desc = pango_font_description_from_string("Noto Serif Old Uyghur Regular 45");
+	desc = pango_font_description_from_string("Noto Serif Old Uyghur Regular 40");
 }
 
 void delete() {
@@ -64,7 +64,7 @@ void load() {
 			Cn[x][y]++;
 			PangoLayout *l = pango_cairo_create_layout(cr);
 			pango_layout_set_font_description(l, desc);
-			pango_layout_set_text(l, A[i]->s, -1);
+			pango_layout_set_markup(l, A[i]->s, -1);
 			pango_layout_get_size(l, &w, &h);
 			//printf("%lf %lf\n", (double)w/PANGO_SCALE, (double)h/PANGO_SCALE);
 			Cw[x][y] += w;
@@ -110,10 +110,10 @@ void text() {
 	}
 	curH = 0;
 	for (int y = 1; y < Y; y++) {
-		cell(1, y, 4, W - (double) max_w / PANGO_SCALE * 4.5);
+		cell(1, y, 4, W - (double) max_w / PANGO_SCALE * 5);
 		curH += (double) max_h / PANGO_SCALE;
 	}
-	//curH += (double) max_h / PANGO_SCALE / 2;
+	curH += (double) max_h / PANGO_SCALE * 1;
 	cell(0, 0, 8, W);
 	curH += (double) max_h / PANGO_SCALE;
 	cell(1, 0, 8, W);

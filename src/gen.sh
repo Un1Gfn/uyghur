@@ -16,9 +16,11 @@ C4=( 3 4 5 6 7 8            13 14 15 16 17 18 19 20 21 22 23 24    32 )
 
 # initial
 I=21
+I_=22
 
 # final
 F=1
+F_=2
 
 f() {
 	local i
@@ -30,7 +32,14 @@ f() {
 }
 
 g() {
+	# black = 0
+	# white = 255
+	#local c="$(printf "%02X" 250)"
+	local c=F0
+	#printf '<span foreground=\\\"lightgray\\\">'
+	printf '<span foreground=\\\"'"#$c$c$c"'\\\">'
 	f "$@"
+	printf '</span>'
 }
 
 # begin
@@ -73,11 +82,9 @@ group1() {
 		c
 		f "$i"
 		c
-		g $I
-		f "$i"
+		[ 1 = "$i" ] && g $I_ || g $I; f "$i"
 		c
-		g $I
-		f 0 "$i"
+		[ 1 = "$i" ] && g $I_ || g $I; f 0 "$i"
 		e
 	done
 	# consonants
@@ -95,9 +102,9 @@ group1() {
 			b "$i"
 			f $i
 			c
-			f $i; g $F
+			f $i; [ 21 = "$i" ] && g $F_ || g $F;
 			c
-			g $I; f $i; g $F
+			g $I; f $i; [ 21 = "$i" ] && g $F_ || g $F;
 			c
 			g $I; f $i
 			e

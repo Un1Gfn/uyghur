@@ -1,5 +1,5 @@
 /*
-export A=chart L=pango,cairo,pangocairo; B() { ./gen.sh >gen.h && gcc -std=gnu23 -Wall -Wextra -O0 -Og -g $(pkg-config --cflags $L) $A.c $(pkg-config --libs $L) -o $A.out; }; R() { env O=/home/darren/Desktop/x.pdf ./$A.out; };
+export A=chart L=pango,cairo,pangocairo; B() { ./gen.sh >gen.h && gcc -std=gnu23 -Wall -Wextra -O0 -Og -g $(pkg-config --cflags $L) $A.c $(pkg-config --libs $L) -o $A.out; }; R() { env O=/tmp/$A.pdf ./$A.out; };
 */
 
 #include <assert.h>
